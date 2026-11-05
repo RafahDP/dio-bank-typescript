@@ -1,35 +1,38 @@
 export abstract class DioAccount {
-  private name: string
+  private readonly name: string
   private readonly accountNumber: number
-  balance: number = 0
+  private balance: number = 0
   private status: boolean = true
 
-  constructor(name: string, accountNumber: number){
+  constructor(name: string, accountNumber: number) {
     this.name = name
     this.accountNumber = accountNumber
-  }
-
-  setName = (name: string): void => {
-    this.name = name
-    console.log('Nome alterado com sucesso!')
   }
 
   getName = (): string => {
     return this.name
   }
 
-  deposit = (): void => {
-    if(this.validateStatus()){
-      console.log('Voce depositou')
+  public deposit = (depositAmount: number): void => {
+    if (this.validateStatus()) {
+      if (depositAmount <= 0) {
+        throw new Error('deposito não pode ser menor que 0')
+      }
+      this.balance = this.balance + depositAmount
     }
   }
 
-  withdraw = (): void => {
-    console.log('Voce sacou')
+  withdraw = (withdrawAmount: number): void => {
+    if (this.validateStatus()) {
+      if (withdrawAmount <= 0 || withdrawAmount >= this.balance) {
+        throw new Error('Saque não pode ser feito')
+      }
+      this.balance = this.balance - withdrawAmount
+    }
   }
 
-  getBalance = (): void => {
-    console.log(this.balance)
+  public getBalance = (): number => {
+    return this.balance
   }
 
   private validateStatus = (): boolean => {
@@ -39,4 +42,8 @@ export abstract class DioAccount {
 
     throw new Error('Conta inválida')
   }
+  getAccountStatus = (): boolean => {
+    return this.status
+  }
+ 
 }
